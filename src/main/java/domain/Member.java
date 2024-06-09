@@ -26,6 +26,7 @@ public class Member {
         this.posts = posts;
     }
 
+
     public Long getId() {
         return id;
     }

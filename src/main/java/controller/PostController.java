@@ -22,20 +22,23 @@ public class PostController {
 
     @PostMapping
     public ResponseEntity<PostResponse> writePost(
-            AuthInfo authInfo,
-            @RequestBody PostRequest postRequest
+            @RequestBody PostRequest postRequest,
+            @RequestHeader("Authorization") String token
     ) {
+        AuthInfo authInfo = authenticate(token);
         Post post = postService.writePost(postRequest.getTitle(), postRequest.getBody(), authInfo.getMemberId());
-                return ResponseEntity.ok(PostResponse.from(post));
-
+        return ResponseEntity.ok(PostResponse.from(post));
     }
 
     @GetMapping
-    public ResponseEntity<List<PostResponse>> getAllPosts(AuthInfo authInfo) {
+    public ResponseEntity<List<PostResponse>> getAllPosts() {
         return ResponseEntity.ok(
-                postService.getAllPosts().stream()
-                        .map(PostResponse::from)
-                        .collect(Collectors.toList())
+                postService.getAllPosts().stream().map(PostResponse::from).collect(Collectors.toList())
         );
+
+    }
+
+    private AuthInfo authenticate(String token) {
+        return new AuthInfo(member);
     }
 }

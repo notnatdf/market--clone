@@ -1,5 +1,6 @@
 package service;
 
+import dto.PostResponse;
 import lombok.RequiredArgsConstructor;
 import domain.Member;
 import domain.Post;
@@ -10,18 +11,21 @@ import repository.PostRepository;
 
 
 import java.time.LocalDateTime;
+import java.util.Collection;
+import java.util.List;
 
 
 @Service
 @RequiredArgsConstructor
 @Transactional
-public class PostService<body> {
+public class PostService {
     private final PostRepository postRepository;
     private final MemberRespository memberRespository;
+    public List<PostResponse> getAllPosts;
 
-    public Post writePost(String title String body, Long writerMemberId) {
+    public Post writePost(String title, String body, Long writerMemberId) {
         Member writer = memberRespository.findById(writerMemberId)
-                .orElseThrow(() -> new IllegalAccessError("Member not found"));
+                .orElseThrow(() -> new IllegalArgumentException("Member not found"));
 
         return postRepository.save(
                         Post.builder()
@@ -31,6 +35,9 @@ public class PostService<body> {
                                 .createdAt(LocalDateTime.now())
                                 .build()
                 );
+    }
+
+    public Collection<Object> getAllPosts() {
     }
 }
 
